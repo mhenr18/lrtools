@@ -127,6 +127,7 @@ static void save_tracks(const std::vector<engine::track>& tracks,
         track_obj->name = namebuf;
         track_obj->type = AMF0_OBJECT;
         track_obj->data.properties = version;
+        track_obj->next = NULL;
         version->next = startLine;
         startLine->next = level;
         
@@ -137,9 +138,10 @@ static void save_tracks(const std::vector<engine::track>& tracks,
         data->data.properties = NULL;
         amf0_obj *curr_line = NULL;
         
+        int k = 0;
         for (int j = t->get_lines().size() - 1; j >= 0; --j) {
             const auto *l = t->get_lines().data() + j;
-            auto *line_obj = make_amf0_obj(j);
+            auto *line_obj = make_amf0_obj(k++);
             auto *x1 = make_amf0_obj(0, l->p0.x);
             auto *y1 = make_amf0_obj(1, l->p0.y);
             auto *x2 = make_amf0_obj(2, l->p1.x);
