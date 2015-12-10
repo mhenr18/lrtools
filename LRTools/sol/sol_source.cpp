@@ -1,3 +1,4 @@
+#include <iostream>
 #include "../platform.hpp"
 #include "sol_source.hpp"
 #include "util.h"
@@ -37,6 +38,11 @@ std::vector<engine::track> sol_source::load_tracks(const std::string& path)
         // find the track
         auto* curr = track_list->data.properties;
         while (curr) {
+            if (curr->type != AMF0_OBJECT) {
+                curr = curr->next;
+                continue;
+            }
+            
             auto* label = find_property("label", curr);
             if (!label) {
                 curr = curr->next;
