@@ -11,6 +11,7 @@
 #include "ls.hpp"
 #include "sols.hpp"
 #include "convert.hpp"
+#include "dump.hpp"
 
 int main(int argc, const char * argv[])
 {
@@ -18,6 +19,7 @@ int main(int argc, const char * argv[])
     ls_addcmd(cparser);
     sols_addcmd(cparser);
     convert_addcmd(cparser);
+    dump_addcmd(cparser);
     
     return cparser.run(argc, argv);
 }

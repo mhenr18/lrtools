@@ -48,16 +48,14 @@ static track load_track(binary_reader& reader)
     int16_t feature_strlen = reader.read_int16();
     string feature_str = reader.read_string(feature_strlen);
     
-    // flat out ignore the feature string...
+    // non-empty feature strings indicate non-beta2 compliance
+    if (feature_str != " " && feature_str != "" && feature_str != ";") {
+        throw runtime_error("unsupported features");
+    }
     
     vec2d start_pos(reader.read_double(), reader.read_double());
     int32_t num_lines = reader.read_int32();
     std::vector<line> lines;
-    
-    // remap the saved id -> actual id, because LRA doesn't save the ids
-    // of scenery lines even though we'd really like to keep them
-    std::unordered_map<line_id, line_id> id_remap;
-    line_id next_name = 1;
     
     for (int32_t i = 0; i < num_lines; ++i) {
         uint8_t flags = reader.read_byte();
@@ -67,19 +65,16 @@ static track load_track(binary_reader& reader)
         line line;
         line.type = lra_type_to_type(lra_type);
         line.inverse = (flags >> 7) > 0;
-        line.name = next_name++;
+        line.name = -1;
         line.snap_mode = snap_mode;
         line.marked = false;
-        line.p0_snap = 0;
-        line.p1_snap = 0;
+        line.p0_snap = -1;
+        line.p1_snap = -1;
         
         if (line.type != LT_SCENERY) {
-            line_id saved_name = reader.read_int32();
-            id_remap[saved_name] = line.name; 
+            line.name = reader.read_int32();
             
             if (snap_mode) {
-                // we don't re-name these now because we might not know about the line
-                // that we're snapped to yet
                 line.p0_snap = reader.read_int32();
                 line.p1_snap = reader.read_int32();
             }
@@ -91,16 +86,81 @@ static track load_track(binary_reader& reader)
         lines.push_back(line);
     }
     
-    // with everything loaded, we now go through the lines and remap the saved snap ids
-    for (auto& line : lines) {
-        if (id_remap.count(line.p0_snap)) {
-            line.p0_snap = id_remap[line.p0_snap];
+    // with everything loaded, we now need to deal with any out-of-order colliding lines
+    // as LRA doesn't guarantee that lines are saved in monotonically increasing line id order
+    int last_name = -99;
+    for (int i = 0; i < lines.size(); ++i) {
+        auto line = lines[i];
+        
+        if (line.type == LT_SCENERY) {
+            continue;
         }
         
-        if (id_remap.count(line.p1_snap)) {
-            line.p1_snap = id_remap[line.p1_snap];
+        if (line.name < last_name) {
+            // scan back to find the correct insertion index
+            // (ignore scenery lines in the reverse scan too)
+            int j = i - 1;
+            while (j >= 0 && (lines[j].type == LT_SCENERY || lines[j].name >= line.name)) {
+                j--;
+            }
+            
+            // remove line from lines
+            lines.erase(lines.begin() + i);
+            
+            // now insert it at the given index
+            lines.insert(lines.begin() + (j + 1), line);
+            
+            // now we want to come back to this index without having a different last_name
+            --i;
+            continue;
+        }
+        
+        last_name = line.name;
+    }
+    
+    // check to ensure the previous loop did its job
+    // (this could probably be removed once I'm happy that the above algorithm is actually correct)
+    last_name = -99;
+    for (int i = 0; i < lines.size(); ++i) {
+        auto line = lines[i];
+        
+        if (line.type != LT_SCENERY && line.name < last_name) {
+            throw runtime_error(strfmt() << "line " << line.name << " is out of order");
+        }
+        
+        if (line.type != LT_SCENERY) {
+            last_name = line.name;
         }
     }
+    
+    // now iterate through and remap line names, because we expect to have a unique line
+    // name for every single line, whereas LRA only does that for colliding lines
+    std::unordered_map<line_id, line_id> id_remap;
+    line_id next_name = 1;
+    
+    for (auto& l : lines) {
+        line_id saved_name = l.name;
+        l.name = next_name++;
+        
+        if (l.type != LT_SCENERY) {
+            id_remap[saved_name] = l.name;
+        }
+    }
+    
+    for (auto& l : lines) {
+        if (l.p0_snap != -1) {
+            l.p0_snap = id_remap[l.p0_snap];
+        } else {
+            l.p0_snap = 0;
+        }
+        
+        if (l.p1_snap != -1) {
+            l.p1_snap = id_remap[l.p1_snap];
+        } else {
+            l.p1_snap = 0;
+        }
+    }
+
     
     // finally, we can return a track with these lines
     return track(std::move(lines), start_pos, "");

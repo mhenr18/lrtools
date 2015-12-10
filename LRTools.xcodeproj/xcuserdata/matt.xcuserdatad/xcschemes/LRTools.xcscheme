@@ -67,7 +67,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/matt/Documents"
+            argument = "/Users/matt/Downloads/103.trk"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

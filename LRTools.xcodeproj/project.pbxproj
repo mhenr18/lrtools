@@ -27,6 +27,7 @@
 		C96BFE771C18503A00D35DBA /* convert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C96BFE761C18503A00D35DBA /* convert.cpp */; };
 		C96BFE7A1C1864A200D35DBA /* sol_sink.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C96BFE791C1864A200D35DBA /* sol_sink.cpp */; };
 		C96BFE7D1C18670E00D35DBA /* json_sink.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C96BFE7C1C18670E00D35DBA /* json_sink.cpp */; };
+		C96BFE801C198E3000D35DBA /* dump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C96BFE7F1C198E3000D35DBA /* dump.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -86,6 +87,8 @@
 		C96BFE791C1864A200D35DBA /* sol_sink.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sol_sink.cpp; sourceTree = "<group>"; };
 		C96BFE7B1C1866FB00D35DBA /* json_sink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = json_sink.h; sourceTree = "<group>"; };
 		C96BFE7C1C18670E00D35DBA /* json_sink.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = json_sink.cpp; sourceTree = "<group>"; };
+		C96BFE7E1C198E1800D35DBA /* dump.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = dump.hpp; sourceTree = "<group>"; };
+		C96BFE7F1C198E3000D35DBA /* dump.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dump.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +135,8 @@
 				C96BFE691C1714C800D35DBA /* sols.cpp */,
 				C96BFE751C18501C00D35DBA /* convert.hpp */,
 				C96BFE761C18503A00D35DBA /* convert.cpp */,
+				C96BFE7E1C198E1800D35DBA /* dump.hpp */,
+				C96BFE7F1C198E3000D35DBA /* dump.cpp */,
 				C96BFE151C16F4BF00D35DBA /* platform.hpp */,
 				C96BFE161C16F51000D35DBA /* platform_unix.cpp */,
 				C96BFE4A1C16FEAA00D35DBA /* track_source.h */,
@@ -253,6 +258,7 @@
 				C96BFE501C16FEBF00D35DBA /* track_source.cpp in Sources */,
 				C96BFE7A1C1864A200D35DBA /* sol_sink.cpp in Sources */,
 				C96BFE6A1C1714C800D35DBA /* sols.cpp in Sources */,
+				C96BFE801C198E3000D35DBA /* dump.cpp in Sources */,
 				C96BFE7D1C18670E00D35DBA /* json_sink.cpp in Sources */,
 				C96BFE061C16EC2D00D35DBA /* main.cpp in Sources */,
 				C96BFE5A1C16FEEA00D35DBA /* trk_sink.cpp in Sources */,
@@ -383,6 +389,7 @@
 				C96BFE0B1C16EC2D00D35DBA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
