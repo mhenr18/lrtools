@@ -96,8 +96,8 @@ static vector<uint8_t> save_track(const track& t)
     
     write_int32(TRK_MAGIC, output);
     write_byte(1, output);
-    write_int16(1, output);
-    write_string(" ", output);
+    write_int16(0, output);
+    //write_string("", output);
     
     write_double(t.get_start_pos().x, output);
     write_double(t.get_start_pos().y, output);

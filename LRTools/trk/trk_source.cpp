@@ -1,3 +1,4 @@
+#include <iostream>
 #include "../platform.hpp"
 #include "trk.h"
 #include "trk_source.h"
@@ -47,9 +48,7 @@ static track load_track(binary_reader& reader)
     int16_t feature_strlen = reader.read_int16();
     string feature_str = reader.read_string(feature_strlen);
     
-    if (feature_str.length() != 1) {
-        throw runtime_error("invalid feature string");
-    }
+    // flat out ignore the feature string...
     
     vec2d start_pos(reader.read_double(), reader.read_double());
     int32_t num_lines = reader.read_int32();
@@ -76,7 +75,7 @@ static track load_track(binary_reader& reader)
         
         if (line.type != LT_SCENERY) {
             line_id saved_name = reader.read_int32();
-            id_remap[saved_name] = line.name;
+            id_remap[saved_name] = line.name; 
             
             if (snap_mode) {
                 // we don't re-name these now because we might not know about the line
